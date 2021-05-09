@@ -1,12 +1,12 @@
 # SSH
 
-## Accessing SSH without full webOS SDK (prisioner)
+## Accessing SSH without full webOS SDK (prisoner)
 
 > **Warning:** If you are already rooted, installing the Devmode app may replace the contents of your `start-devmode.sh`.
 
-> If you are already rooted, you can just add your ssh public key to the list of authorized keys of the prisioner user.
+> If you are already rooted, you can just add your ssh public key to the list of authorized keys of the prisoner user.
 
-If you want to connect to the TV via SSH as the `prisioner` user (for devmode) using the official Devmode app and without installing the full SDK, follow the following steps:
+If you want to connect to the TV via SSH as the `prisoner` user (for devmode) using the official Devmode app and without installing the full SDK, follow the following steps:
 
 **On the TV:**
 1. Install the Devmode app in your TV
@@ -38,7 +38,7 @@ openssl rsa -in <(curl http://$tv:9991/webos_rsa) > webos_rsa && chmod 600 webos
 ssh prisoner@$tv -i webos_rsa -p 9922 bash -i
 ```
 
-**Note:** This will download your TV's prisioner user's private key (`webos_rsa`) to the directory where you are running the commands from (in this case, it is in `~/.ssh/`). 
+**Note:** This will download your TV's prisoner user's private key (`webos_rsa`) to the directory where you are running the commands from (in this case, it is in `~/.ssh/`). 
 
 **Tip:** The @webosose/ares-cli npm package is sufficient to play with webOS TV development. (ares-package, ares-install, ares-launch...)
 
