@@ -2,7 +2,9 @@
 
 pmlogDaemon logs only topics and events of those topics listed in `/etc/PmLogDaemon/whitelist.txt`.
 
-Not all events are sent to this logger. For example, `console.log`s are not logged here.
+Its configuration can be managed in `/etc/pmlog.d/`.
+
+[I am not sure if all events are sent to this logger. I think that, for example, `console.log`s are not logged here.]
 
 In old versions of webOS (how old?) and in non-prod builds of pmlogDaemon it is possible to change the behaviour of pmlogd to enabling logging of all logs by running the following commands.
 
@@ -26,6 +28,8 @@ You can find applications logging events by searching for strings such as:
 ```
 printNormalLog("NL_MENU_CLICK", {"menu_name": "add"});
 ```
+
+The whitelist can be updated by rebooting the TV or calling `luna-send -n 1 luna://com.webos.pmlogd/enableNewWhitelist '{}'`.
 
 ## Preventing logs from being sent to LG
 
