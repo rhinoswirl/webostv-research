@@ -1,16 +1,44 @@
 # Increase pmlogd logging
 
-> This doesn't work anymore on newer webos/pmlogd versions
+pmlogDaemon logs only topics and events of those topics listed in `/etc/PmLogDaemon/whitelist.txt`.
 
-By default pmlogdaemon logs only topics listed in /etc/PmLogDaemon/whitelist.txt.
+Not all events are sent to this logger. For example, `console.log`s are not logged here.
 
-To enable all logging use:
+In old versions of webOS (how old?) and in non-prod builds of pmlogDaemon it is possible to change the behaviour of pmlogd to enabling logging of all logs by running the following commands.
 
 ```sh
 luna-send -n 1 -f 'luna://com.webos.pmlogd/setdevlogstatus' '{"recordDevLogs":false}'
 luna-send -n 1 -f 'luna://com.webos.pmlogd/getdevlogstatus' '{}'
 ```
 
-After enabling all devlogs specific contexts can be adjusted using PmLogCtl.
+In newer versions, that is no longer possible ([source](https://github.com/openwebos/pmlogdaemon/commit/7c1ddcbbcfde9f81dec87a635e251540556710b6)) and the logging needs to be predent in the whitelist file.
 
-(note: you most probably want to disable rdxd first, as per rootmytv immutable mounts...)
+The whitelist consists on a set of items in the format `<context> <msg_id>` with no leading or trailing white space, and a single space between them, such as:
+
+```
+com.palm.app.settings TIMEZONE_CHANGED
+AppInstallD APP_INSTALLED
+com.webos.app.livetv LIVE_MENU
+```
+
+You can find applications logging events by searching for strings such as:
+
+```
+printNormalLog("NL_MENU_CLICK", {"menu_name": "add"});
+```
+
+## Preventing logs from being sent to LG
+
+pmlogd will log the events listed in the whitelist to `/var/log/messages`.
+
+These and other logs will periodically be sent to LG unless the following directories are mounted as unwritable:
+
+```
+/var/spool/rdxd/
+/var/spool/uploadd/pending/
+/var/spool/uploadd/uploaded/
+```
+
+If you use RootMy.Tv `start-devmode.sh` script, the immutable mounts are already done.
+
+However, because the system may try to move some of the log files to these locations, it is possible that some of the logs may be lost.
