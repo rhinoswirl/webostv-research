@@ -1,4 +1,4 @@
-# Starting activities automatically
+# Scheduled tasks and triggers
 
 **Note:** This page is for documentation purposes. It is not clear if it is possible for user-installed apps to be part of the autostart list.
 
