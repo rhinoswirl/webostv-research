@@ -2,13 +2,17 @@
 
 **Note:** This page is for documentation purposes. It is not clear if it is possible for user-installed apps to be part of the autostart list.
 
-It is possible to create some rules that will allow the autostart of certain services based on a set of conditions being met.
+## Activity Manager
+
+The Activity Manager ([com.webos.service.activitymanager (webosose)](https://www.webosose.org/docs/reference/ls2-api/com-webos-service-activitymanager/), [com.palm.activitymanager (webosTV)](https://webostv.developer.lge.com/api/webos-service-api/activity-manager/)) is responsible for coordinating work in the system and is able to start any dynamic service that needs to wake up when certain conditions are met.
+
+For this to work, it is necessary to create an Activity, which represents some specific item of work in the system. It works like a scheduler that tracks events described in an Activity and reacts to them based on the Activity's specification.
 
 The system has some of these activities present in `/etc/palm/activities`.
 
 Here is an example of a file that will start an service automatically when Internet connection is enabled:
 
-```
+```json
 {
     "activity" : {
         "name" : "com.example.service.auto.start",
@@ -35,8 +39,110 @@ Here is an example of a file that will start an service automatically when Inter
     "replace" : true,
     "start" : true
 }
-
 ```
+
+Example code to create activity with a combined trigger:
+
+```sh
+# luna-send -i -f luna://com.webos.service.activitymanager/create '{
+  "activity": {
+    "name": "browser restart",
+    "description":"",
+    "type": { "foreground":true, "continuous": true },
+    "callback": {
+      "method": "luna://com.webos.service.applicationmanager/launch",
+      "params": { "id": "com.webos.app.enactbrowser" }
+    },
+    "trigger": {
+      "and": [
+        {
+          "method": "luna://com.webos.service.applicationmanager/getAppLifeStatus",
+          "params": { "subscribe": true },
+          "where": {
+            "and": [
+              { "op": "=", "prop": "appId", "val": "com.webos.app.enactbrowser" },
+              { "op": "=", "prop": "status", "val": "stop"}
+            ]
+          }
+        },
+        {
+          "method": "luna://com.webos.service.connectionmanager/getstatus",
+          "params": { "subscribe": true },
+          "where": { "prop": "isInternetConnectionAvailable", "op": "=", "val": true }
+        }
+      ]
+    }
+  },
+  "start": true,
+  "subscribe": true
+}'
+```
+
+```json
+# Response:
+
+{
+  "activityId": 85,
+  "returnValue": true,
+  "subscribed": true
+}
+
+# Subscription response:
+
+{
+  "event": "start",
+  "activityId": 85,
+  "returnValue": true,
+  "subscribed": true
+}
+```
+
+Example code to create a scheduled activity inside a service:
+
+```js
+// Create a scheduled activity with callback
+var request = webOS.service.request("luna://com.palm.activitymanager", {
+    method: "create",
+    parameters: {
+        "activity": {
+            "name": "ScheduledActivityWithCallback",
+            "description": "Test create of scheduled activity with callback",
+            "type": {
+                "foreground": true
+            },
+                        "schedule": {
+                                "start": "2015-02-15 00:05:00"
+                        },
+                        "callback": {
+                                "method": "luna://com.webos.audio/setMuted",
+                                "params": {
+                                    "muted": "true"
+                                }
+                        }
+        },
+        "start": true,
+        "subscribe": true
+    },
+    onSuccess: function (inResponse) {
+        if (!inResponse.event) {
+            console.log("The scheduled Activity is created");
+            // To-Do something
+        } else {
+            console.log("Received event: " + inResponse.event);
+            console.log("Audio will be muted");
+            // To-Do something
+        }
+    },
+    onFailure: function (inError) {
+        console.log("Failed to create the Activity");
+        console.log("[" + inError.errorCode + "]: " + inError.errorText);
+        // To-Do something
+        return;
+    }
+});
+```
+
+## webos-preload-manager
 
 There is also `webos-preload-manager` (`com.webos.service.preloadmanager`; `/usr/bin/webos-preload-manager`), which is a service responsible for preloading components, which exposes the following methods:
 
@@ -48,7 +154,7 @@ There is also `webos-preload-manager` (`com.webos.service.preloadmanager`; `/usr
 
 The configuration is stored in a `.json` file (see `/etc/configd/layers/base/com.webos.service.preloadmanager.json`) with the following format:
 
-```
+```json
 {
     "id" : "app-id",
     "staticPriority" : 10,
