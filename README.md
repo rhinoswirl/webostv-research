@@ -13,8 +13,8 @@ This project is not affiliated with LG in any way. Logos and trademarks are prop
 
 ## Sourced from the research work of (alphabetical order):
 
-- [Piotr Dobrowolski](https://github.com/Informatic/)
-- other contributors (sorry, I promise I'll update the whole list)
+- [Informatic](https://github.com/Informatic/)
+- Other contributors
 
 ## Special thanks to the following projects and all their contributors:
 

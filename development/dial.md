@@ -1,8 +1,6 @@
 # Receiving DIAL/SSDP
 
-DIAL allows launching a TV app using your phone. It is possible to configure a user-developed application to accept [DIAL](https://en.wikipedia.org/wiki/Discovery_and_Launch) start requests.
-
-SSDP is advertised on 36866.
+DIAL/SSDP allows launching a TV app using your phone. It is possible to configure a user-developed application to accept [DIAL](https://en.wikipedia.org/wiki/Discovery_and_Launch) start requests.
 
 To register an app for DIAL, add the following contents to your app's `appInfo.json`:
 
@@ -16,26 +14,30 @@ You can also allow your app to automatically turn on the TV by adding `"wolwowla
 "wolwowlan":true
 ```
 
-You are able to communicate with your service using the following endpoints:
+`com.webos.service.dial` starts SSDP and HTTP servers on port 36866 (both in the same port?). This port is advertised to the exterior.
+
+The system also has a "YouTube Port" in 18181 which can reply to commands similar to the following:
+
+> **Warning:** Untested!
 
 ```
 # Get app info
-GET http://your-tv-ip-address:18181/apps/<your-app-dialAppName>
+GET http://localhost:18181/apps/<dialAppName>
 ```
 
 ```
 # Launch app
-POST http://your-tv-ip-address:18181/apps/<your-app-dialAppName>/run
+POST http://localhost:18181/apps/<dialAppName>/run
 ```
 
 ```
 # Hide app
-POST http://your-tv-ip-address:18181/apps/<your-app-dialAppName>/hide
+POST http://localhost:18181/apps/<dialAppName>/hide
 ```
 
 ```
 # Stop app
-DELETE http://your-tv-ip-address:18181/apps/<your-app-dialAppName>
+DELETE http://localhost:18181/apps/<dialAppName>
 ```
 
 YouTube and Netflix apps have some special handling that allows them to be launched with additional parameters, which is not applicable to third-parties.
