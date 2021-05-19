@@ -1,6 +1,6 @@
 # Scheduled tasks and triggers
 
-**Note:** This page is for documentation purposes. It is not clear if it is possible for user-installed apps to be part of the autostart list.
+> **Warning:** Untested
 
 ## Activity Manager
 
@@ -143,6 +143,8 @@ var request = webOS.service.request("luna://com.palm.activitymanager", {
 ```
 
 ## webos-preload-manager
+
+
 
 There is also `webos-preload-manager` (`com.webos.service.preloadmanager`; `/usr/bin/webos-preload-manager`), which is a service responsible for preloading components, which exposes the following methods:
 

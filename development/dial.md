@@ -29,7 +29,7 @@ GET http://localhost:18181/apps/<dialAppName>
 # Launch app
 POST http://localhost:18181/apps/<dialAppName>/run
 ```
-
+development/dial.md
 ```
 # Hide app
 POST http://localhost:18181/apps/<dialAppName>/hide

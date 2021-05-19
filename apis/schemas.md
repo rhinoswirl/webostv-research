@@ -8,4 +8,4 @@ The schemas can be found in:
 
 ```
 /etc/palm/schemas
-```
+``` 
